@@ -1,3 +1,11 @@
+from PIL import Image 
+import numpy as np
+import matplotlib.pyplot as plt
+import glob
+import os
+import cv2
+from tqdm import tqdm
+
 def transform(img, size: tuple, crop_size: tuple):
     """
     returns resized and center cropped image
@@ -15,7 +23,7 @@ def transform(img, size: tuple, crop_size: tuple):
     return crop_img
 
 def save_img_and_masks(img_path: str, 
-                       dir_path: str, 
+                       dataset_path: str, 
                        index: int, 
                        size: tuple,
                        crop_size: tuple,
@@ -27,7 +35,7 @@ def save_img_and_masks(img_path: str,
     combines image and sketch and saves them as one image to the folder
     arguments:
         -img_path: path to the image,
-        -dir_path: path to the dataset directory,
+        -dataset_path: path to store the dataset,
         -index: index of the given image, used to rename images by their indexes,
         -size: size of image after applying resize
         -crop_size: size of image after applying center crop
@@ -40,9 +48,9 @@ def save_img_and_masks(img_path: str,
     sketch = np.stack((sketch,)*3, axis=-1)   # make BW image have 3 color channels
     img_combined = np.concatenate([img, sketch], 1)
     try:
-        os.makedirs(dir_path)
+        os.makedirs(dataset_path)
     except FileExistsError:
     # directory already exists
         pass
     # save image and its sketch combined in one file
-    cv2.imwrite(dir_path+str(index)+'.jpg', img_combined) 
+    cv2.imwrite(dataset_path+str(index)+'.jpg', img_combined)
